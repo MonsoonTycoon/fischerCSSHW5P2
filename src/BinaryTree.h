@@ -8,6 +8,11 @@
 #include <stack>
 
 using namespace std;
+//design elements taken from
+//https://www.geeksforgeeks.org/inorder-tree-traversal-without-recursion/
+//https://www.geeksforgeeks.org/iterative-preorder-traversal/
+//https://www.techiedelight.com/postorder-tree-traversal-iterative-recursive/
+//in-class examples, and book
 
 template<class T>
 class BinaryTree : public Tree<T> {
@@ -54,10 +59,9 @@ public:
             curr = nodeStack.top();
             result.push_back(curr->val);
             nodeStack.pop();
-            cout << curr->val << " ";
+
             //process right side of tree
             curr = curr->right;
-
         }
         return result;
     }
@@ -87,8 +91,6 @@ public:
     }
 
     std::vector<T> traversePostOrder() override {
-        // Iterative function to perform post-order traversal of the tree
-        // create an empty stack and push root node
         std::vector<T> result;
         if (root == nullptr) return result;
 
@@ -110,47 +112,46 @@ public:
                 nodeStack.push(curr->right);
         }
 
-      //  while (!result.empty()) {
-      //      result.front() << " ";
-   //         result.erase(result.begin());
-       // }
         return result;
     }
 
     virtual ~BinaryTree() {
         // homework
-        //something trivial
     }
 
     T LCA(T node1, T node2) {
-        // Base case
-        if (root == nullptr) return -1;
+        if (node1 == node2) {
+            return node1;
+        }
+        TreeNode<T>* ans = LCARecursive(node1, node2, root);
+        return ans -> val;
+    }
 
-        if (root->val == node1 || root->val == node2)
-            return root->val;
+    TreeNode<T>* LCARecursive(T node1, T node2, TreeNode<T> *curr) {
+        if (curr == nullptr) return nullptr;
+        if (curr->val == node1 || curr->val == node2)
+            return curr;
 
-        // Look for keys in left and right subtrees
-        TreeNode<T> *left_lca = LCA( node1->left, node2);
-        TreeNode<T> *right_lca = LCA( node1, node2->right);
+        TreeNode<T> *left_lca = LCARecursive(node1, node2, curr->left);
+        TreeNode<T> *right_lca = LCARecursive(node1, node2, curr->right);
 
-        // If both of the above calls return Non-NULL, then one key
-        // is present in once subtree and other is present in other,
-        // So this node is the LCA
-        if (left_lca && right_lca) return root;
+        if (left_lca && right_lca) return curr;
 
-        // Otherwise check if left subtree or right subtree is LCA
         return (left_lca != nullptr) ? left_lca : right_lca;
     }
 
-    bool add(const T &) override {
+    bool add(const T &)
+    override {
         // not implemented yet
     }
 
-    bool remove(const T &) override {
+    bool remove(const T &)
+    override {
         // not implemented yet
     }
 
-    int height() override {
+    int height()
+    override {
         return height(root);
     }
 
