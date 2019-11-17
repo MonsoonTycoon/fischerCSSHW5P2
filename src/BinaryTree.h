@@ -119,6 +119,7 @@ public:
 
     virtual ~BinaryTree() {
         // homework
+        //something trivial
     }
 
     T LCA(T node1, T node2) {
