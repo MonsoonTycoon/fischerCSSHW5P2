@@ -12,7 +12,7 @@ using namespace std;
 //https://www.geeksforgeeks.org/inorder-tree-traversal-without-recursion/
 //https://www.geeksforgeeks.org/iterative-preorder-traversal/
 //https://www.techiedelight.com/postorder-tree-traversal-iterative-recursive/
-//in-class examples, and book
+//in-class examples, and the book
 
 template<class T>
 class BinaryTree : public Tree<T> {
@@ -66,29 +66,7 @@ public:
         return result;
     }
 
-    std::vector<T> traversePreOrder() override {
-        std::vector<int> result;
-
-        if (root == nullptr) return result;
-
-        stack<TreeNode<T> *> nodeStack;
-        nodeStack.push(root);
-
-        while (!nodeStack.empty()) {
-
-            TreeNode<T> *node = nodeStack.top();
-            result.push_back(node->val);
-            printf("%d ", node->val);
-            nodeStack.pop();
-
-            // Push right and left children of the popped node to stack
-            if (node->right)
-                nodeStack.push(node->right);
-            if (node->left)
-                nodeStack.push(node->left);
-        }
-        return result;
-    }
+    std::vector<T> traversePreOrder() override {}
 
     std::vector<T> traversePostOrder() override {
         std::vector<T> result;
@@ -116,7 +94,39 @@ public:
     }
 
     virtual ~BinaryTree() {
-        // homework
+        //first idea...this deleted the tree in pre-order when called locally, but
+        //when the tree was returned through a function, gave a seg fault error
+        //I'm guessing because it deletes the root but loses reference to it's children
+       // if (root) delete root;
+        //this idea does a preorder iterative traversal and saves the memory reference in a vector
+        //then the stack is deleted
+        std::vector<T> toDelete = preorderDelete( root );
+        toDelete.clear(); //remove elements
+        toDelete.shrink_to_fit(); // free memory
+        //this is extremely ineffectient but I think it meets the HW specifications
+    }
+    std::vector<T> preorderDelete ( TreeNode<T> * curr){
+        std::vector<int> result;
+
+        if (root == nullptr) return result;
+
+        stack<TreeNode<T> *> nodeStack;
+        nodeStack.push(root);
+
+        while (!nodeStack.empty()) {
+
+            TreeNode<T> *node = nodeStack.top();
+            result.push_back(node->val);
+   //         printf("%d ", node->val);
+            nodeStack.pop();
+
+            // Push right and left children of the popped node to stack
+            if (node->right)
+                nodeStack.push(node->right);
+            if (node->left)
+                nodeStack.push(node->left);
+        }
+        return result;
     }
 
     T LCA(T node1, T node2) {
