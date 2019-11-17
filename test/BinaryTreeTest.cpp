@@ -151,7 +151,7 @@ BinaryTree<int> LCATree (){
     root->getLeft()->setRight(new TreeNode<int>(3));
 
     root->getRight()->setLeft(new TreeNode<int>(2));
-    root->getRight()->setLeft(new TreeNode<int>(9));
+    root->getRight()->setRight(new TreeNode<int>(9));
 
     BinaryTree<int> tree(root);
     return root;
@@ -161,8 +161,23 @@ TEST(tree, LCA44){
     BinaryTree<int> testTree = LCATree();
     EXPECT_EQ( testTree.LCA ( 4, 4), 4);
 };
-TEST(tree, LCA77){};
-TEST(tree, LCA73){};
-TEST(tree, LCA78){};
-TEST(tree, LCA86){};
-TEST(tree, LCA32){};
+TEST(tree, LCA77){
+    BinaryTree<int> testTree = LCATree();
+    EXPECT_EQ( testTree.LCA ( 7, 7), 7);
+};
+TEST(tree, LCA73){
+    BinaryTree<int> testTree = LCATree();
+    EXPECT_EQ( testTree.LCA ( 7, 3), 8);
+};
+TEST(tree, LCA78){
+    BinaryTree<int> testTree = LCATree();
+    EXPECT_EQ( testTree.LCA ( 7, 8), 8);
+};
+TEST(tree, LCA86){
+    BinaryTree<int> testTree = LCATree();
+    EXPECT_EQ( testTree.LCA ( 8, 6), 4);
+};
+TEST(tree, LCA32){
+    BinaryTree<int> testTree = LCATree();
+    EXPECT_EQ( testTree.LCA ( 3, 2), 4);
+};
