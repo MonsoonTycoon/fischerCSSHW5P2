@@ -42,25 +42,18 @@ public:
     }
 
     std::vector<T> traverseInOrder() override {
-        std::vector<int> result;
-
+        vector<int> result;
         if (root == nullptr) return result;
-
-        std::stack<TreeNode<T> *> nodeStack;
+        stack<TreeNode<T> *> nodeStack;
         TreeNode<T> *curr = root;
-
-        while (curr != nullptr || !nodeStack.empty()) {
-            //process left side of tree
-            while (curr != nullptr) {
+        while ( curr || !nodeStack.empty()) {
+            while ( curr ) {
                 nodeStack.push(curr);
                 curr = curr->left;
             }
-
             curr = nodeStack.top();
             result.push_back(curr->val);
             nodeStack.pop();
-
-            //process right side of tree
             curr = curr->right;
         }
         return result;
@@ -71,73 +64,90 @@ public:
     std::vector<T> traversePostOrder() override {
         std::vector<T> result;
         if (root == nullptr) return result;
-
-        stack<TreeNode<T> *> nodeStack;
+        std::stack<TreeNode<T> *> nodeStack;
         nodeStack.push(root);
-
-        // run till stack is not empty
         while (!nodeStack.empty()) {
-
             TreeNode<T> *curr = nodeStack.top();
             nodeStack.pop();
+            //ends up last
             result.insert(result.begin(), curr->val);
-
-            // push left and right child of popped node to the stack
+            // push left then right child to stack
             if (curr->left)
                 nodeStack.push(curr->left);
-
             if (curr->right)
                 nodeStack.push(curr->right);
         }
-
         return result;
     }
 
     virtual ~BinaryTree() {
-        //first idea...this deleted the tree in pre-order when called locally, but
+//        destroy ( root );
+        //this is post order, but for now its as close as i can get. calls the node destructor.
+//        delete root;
+        //first try...this deleted the tree in pre-order when called locally, but
         //when the tree was returned through a function, gave a seg fault error
         //I'm guessing because it deletes the root but loses reference to it's children
-       // if (root) delete root;
-        //this idea does a preorder iterative traversal and saves the memory reference in a vector
+        // if (root) delete root;
+  //     preorderDelete ( root );
+        //this idea might do a preorder iterative traversal and saves the memory reference in a vector
         //then the stack is deleted
-        std::vector<T> toDelete = preorderDelete( root );
-        toDelete.clear(); //remove elements
-        toDelete.shrink_to_fit(); // free memory
+        //std::vector<T>* toDelete = preorderDelete(root);
+        //toDelete->clear(); //remove elements
+        //toDelete->shrink_to_fit(); // free memory
         //this is extremely ineffectient but I think it meets the HW specifications
+
+        destroyPost ( root );
     }
-    std::vector<T> preorderDelete ( TreeNode<T> * curr){
-        std::vector<int> result;
-
-        if (root == nullptr) return result;
-
-        stack<TreeNode<T> *> nodeStack;
-        nodeStack.push(root);
-
-        while (!nodeStack.empty()) {
-
-            TreeNode<T> *node = nodeStack.top();
-            result.push_back(node->val);
-   //         printf("%d ", node->val);
-            nodeStack.pop();
-
-            // Push right and left children of the popped node to stack
-            if (node->right)
-                nodeStack.push(node->right);
-            if (node->left)
-                nodeStack.push(node->left);
+    void destroyPost ( TreeNode<T> *& curr){
+        if ( curr ){
+            destroyPost ( curr-> left );
+            destroyPost ( curr->right );
+            delete curr;
         }
-        return result;
+    }
+    /*
+    void destroy ( TreeNode<T> *& curr){
+    if ( curr ) {
+        stack<TreeNode<T> *> holdThis;
+        holdThis.push ( curr );
+        while ( !holdThis.empty()){
+            TreeNode<T> *ptr = holdThis.top();
+            delete curr;
+            if ( ptr-> right ){ holdThis.push ( ptr-> right); }
+            if ( ptr -> left ){ holdThis.push ( ptr->left ); }
+        }
+    }
     }
 
+
+    void preorderDelete(TreeNode<T> *curr) {
+        if (curr) {
+            stack<TreeNode<T> *> nodeStack;
+            TreeNode<T> *ptr = curr;
+            nodeStack.push(curr);
+            while (!nodeStack.empty()) {
+                TreeNode<T> *node = nodeStack.top();
+                //       delete node;
+                //  result->push_back(node->val);
+                //         printf("%d ", node->val);
+                nodeStack.pop();
+                if (node->right)
+                    nodeStack.push(node->right);
+                if (node->left)
+                    nodeStack.push(node->left);
+            }
+        }
+    }
+    */
     T LCA(T node1, T node2) {
         if (node1 == node2) {
             return node1;
         }
-        TreeNode<T>* ans = LCARecursive(node1, node2, root);
-        return ans -> val;
+        TreeNode<T> *ans = LCARecursive(node1, node2, root);
+        return ans->val;
     }
 
-    TreeNode<T>* LCARecursive(T node1, T node2, TreeNode<T> *curr) {
+    TreeNode<T> *LCARecursive(T node1, T node2, TreeNode<T> *curr) {
         if (curr == nullptr) return nullptr;
         if (curr->val == node1 || curr->val == node2)
             return curr;
