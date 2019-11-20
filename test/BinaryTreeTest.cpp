@@ -17,10 +17,17 @@ TEST(tree, demo) {
     ASSERT_EQ(tree.height(),3);
 }
 
-TEST(tree, destructorNull){};
-TEST(tree, destructorSingleEle){};
-TEST(tree, destructorTwoEles){};
-TEST(tree, destructorMultipleEles){};
+TEST(tree, destructorMultipleEles){
+//Testing destructor:
+    // running valgrind on the program and ensuring there are no memory leaks is one way to test the destructor is working.
+    // an idea is to try and print or access the memory that is supposedly deleted, but ive been told (by a friend) this is not possible in C++.
+    // calling delete on an object that should already be deleted, and gauging the computer's response is another idea
+    // while completing this homework I have many problems with the destructor being called upon local scope terminating
+    // when local scope terminated the destructor was called on some objects which forced me to understand in much
+    //more detail how memory is allocated. writing a new constructor, and having a program that compiles
+    //with no memory leaks is a strong test but not a test that is written with any sort of boolean return to the user.
+    
+};
 TEST(tree, inorderNull){
     TreeNode<int>* root = nullptr;
 
@@ -152,8 +159,8 @@ BinaryTree<int> LCATree (){
 
     root->getRight()->setLeft(new TreeNode<int>(2));
     root->getRight()->setRight(new TreeNode<int>(9));
-
-    BinaryTree<int> tree(root);
+//that right theres yor problm
+//    BinaryTree<int> tree(root);
     return root;
 }
 
