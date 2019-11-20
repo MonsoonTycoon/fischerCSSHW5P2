@@ -44,7 +44,7 @@ public:
     std::vector<T> traverseInOrder() override {
         vector<int> result;
         if (root == nullptr) return result;
-        stack<TreeNode<T> *> nodeStack;
+        std::stack<TreeNode<T> *> nodeStack;
         TreeNode<T> *curr = root;
         while ( curr || !nodeStack.empty()) {
             while ( curr ) {
@@ -96,15 +96,17 @@ public:
         //toDelete->shrink_to_fit(); // free memory
         //this is extremely ineffectient but I think it meets the HW specifications
 
-        destroyPost ( root );
+        destroy ( root );
     }
-    void destroyPost ( TreeNode<T> *& curr){
+    void destroy ( TreeNode<T> * curr){
         if ( curr ){
-            destroyPost ( curr-> left );
-            destroyPost ( curr->right );
-            delete curr;
+            TreeNode<T> * leftptr = curr -> left;
+            TreeNode<T> * rightptr = curr -> right;
+            delete curr
+            destroy ( leftptr );
+            destroy ( rightptr );
         }
-    }
+    } 
     /*
     void destroy ( TreeNode<T> *& curr){
     if ( curr ) {
